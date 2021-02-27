@@ -12,76 +12,76 @@ const ownerNumber = config.ownerBot
 const fs = require('fs-extra')
 const { groupLimit, memberLimit } = require('./database/bot/setting.json')
 
-const start = (Saraajinbot = new Client()) => {
-    console.log(color(figlet.textSync('Saraajinbot', 'Larry 3D'), 'cyan'))
+const start = (bocchi = new Client()) => {
+    console.log(color(figlet.textSync('BocchiBot', 'Larry 3D'), 'cyan'))
     console.log(color('=> Bot successfully loaded! Database:', 'yellow'), color(loader.getAllDirFiles('./database').length), color('Library:', 'yellow'), color(loader.getAllDirFiles('./lib').length), color('Function:', 'yellow'), color(loader.getAllDirFiles('./function').length))
     console.log(color('=> Source code version:', 'yellow'), color(version))
     console.log(color('=> Bugs? Errors? Suggestions? Visit here:', 'yellow'), color(bugs.url))
-    console.log(color('[Saraajinbot]'), color('Saraajinbot is now online!', 'yellow'))
+    console.log(color('[BOCCHI]'), color('BocchiBot is now online!', 'yellow'))
     console.log(color('[DEV]', 'cyan'), color('Welcome back, Owner! Hope you are doing well~', 'magenta'))
 
     // Uncomment code di bawah untuk mengaktifkan auto-update file changes. Tidak disarankan untuk long-time use.
     // loader.nocache('../message/index.js', (m) => console.log(color('[WATCH]', 'orange'), color(`=> '${m}'`, 'yellow'), 'file is updated!'))
 
-    Saraajinbot.onStateChanged((state) => {
-        console.log(color('[Saraajinbot]'), state)
-        if (state === 'UNPAIRED' || state === 'CONFLICT' || state === 'UNLAUNCHED') Saraajinbot.forceRefocus()
+    bocchi.onStateChanged((state) => {
+        console.log(color('[BOCCHI]'), state)
+        if (state === 'UNPAIRED' || state === 'CONFLICT' || state === 'UNLAUNCHED') bocchi.forceRefocus()
     })
 
-    Saraajinbot.onAddedToGroup(async (chat) => {
-        const gc = await Saraajinbot.getAllGroups()
-        console.log(color('[Saraajinbot]'), 'Added a to new group. Name:', color(chat.contact.name, 'yellow'), 'Total members:', color(chat.groupMetadata.participants.length, 'yellow'))
+    bocchi.onAddedToGroup(async (chat) => {
+        const gc = await bocchi.getAllGroups()
+        console.log(color('[BOCCHI]'), 'Added a to new group. Name:', color(chat.contact.name, 'yellow'), 'Total members:', color(chat.groupMetadata.participants.length, 'yellow'))
         if (chat.groupMetadata.participants.includes(ownerNumber)) {
-            await Saraajinbot.sendText(chat.id, ind.addedGroup(chat))
+            await bocchi.sendText(chat.id, ind.addedGroup(chat))
         } else if (gc.length > groupLimit) {
-            await Saraajinbot.sendText(chat.id, `Max groups reached!\n\nCurrent status: ${gc.length}/${groupLimit}`)
-            await Saraajinbot.deleteChat(chat.id)
-            await Saraajinbot.leaveGroup(chat.id)
+            await bocchi.sendText(chat.id, `Max groups reached!\n\nCurrent status: ${gc.length}/${groupLimit}`)
+            await bocchi.deleteChat(chat.id)
+            await bocchi.leaveGroup(chat.id)
         } else if (chat.groupMetadata.participants.length < memberLimit) {
-            await Saraajinbot.sendText(chat.id, `Need at least ${memberLimit} members in group!`)
-            await Saraajinbot.deleteChat(chat.id)
-            await Saraajinbot.leaveGroup(chat.id)
+            await bocchi.sendText(chat.id, `Need at least ${memberLimit} members in group!`)
+            await bocchi.deleteChat(chat.id)
+            await bocchi.leaveGroup(chat.id)
         } else {
-            await Saraajinbot.sendText(chat.id, ind.addedGroup(chat))
+            await bocchi.sendText(chat.id, ind.addedGroup(chat))
         }
     })
 
-    Saraajinbot.onMessage((message) => {
+    bocchi.onMessage((message) => {
         // Uncomment code di bawah untuk mengaktifkan auto-delete cache pesan.
         /*
-        Saraajinbot.getAmountOfLoadedMessages()
+        bocchi.getAmountOfLoadedMessages()
             .then((msg) => {
                 if (msg >= 1000) {
-                    console.log(color('[Saraajinbot]'), color(`Loaded message reach ${msg}, cuting message cache...`, 'yellow'))
-                    Saraajinbot.cutMsgCache()
-                    console.log(color('[Saraajinbot]'), color('Cache deleted!', 'yellow'))
+                    console.log(color('[BOCCHI]'), color(`Loaded message reach ${msg}, cuting message cache...`, 'yellow'))
+                    bocchi.cutMsgCache()
+                    console.log(color('[BOCCHI]'), color('Cache deleted!', 'yellow'))
                 }
             })
         */
         
         // Comment code msgHandler di bawah untuk mengaktifkan auto-update. Kemudian, uncomment code require di bawah msgHandler.
-        msgHandler(Saraajinbot, message)
-        // require('./message/index.js')(Saraajinbot, message)
+        msgHandler(bocchi, message)
+        // require('./message/index.js')(bocchi, message)
     })
 
-    Saraajinbot.onIncomingCall(async (callData) => {
-        await Saraajinbot.sendText(callData.peerJid, ind.blocked(ownerNumber))
-        await Saraajinbot.contactBlock(callData.peerJid)
+    bocchi.onIncomingCall(async (callData) => {
+        await bocchi.sendText(callData.peerJid, ind.blocked(ownerNumber))
+        await bocchi.contactBlock(callData.peerJid)
         console.log(color('[BLOCK]', 'red'), color(`${callData.peerJid} has been blocked.`, 'yellow'))
     })
 
-    Saraajinbot.onGlobalParticipantsChanged(async (event) => {
+    bocchi.onGlobalParticipantsChanged(async (event) => {
         const _welcome = JSON.parse(fs.readFileSync('./database/group/welcome.json'))
         const isWelcome = _welcome.includes(event.chat)
-        const gcChat = await Saraajinbot.getChatById(event.chat)
-        const pcChat = await Saraajinbot.getContact(event.who)
+        const gcChat = await bocchi.getChatById(event.chat)
+        const pcChat = await bocchi.getContact(event.who)
         let { pushname, verifiedName, formattedName } = pcChat
         pushname = pushname || verifiedName || formattedName
         const { name, groupMetadata } = gcChat
-        const botNumbers = await Saraajinbot.getHostNumber() + '@c.us'
+        const botNumbers = await bocchi.getHostNumber() + '@c.us'
         try {
             if (event.action === 'add' && event.who !== botNumbers && isWelcome) {
-                const pic = await Saraajinbot.getProfilePicFromServer(event.who)
+                const pic = await bocchi.getProfilePicFromServer(event.who)
                 if (pic === undefined) {
                     var picx = 'https://i.ibb.co/Tq7d7TZ/age-hananta-495-photo.png'
                 } else {
@@ -101,9 +101,9 @@ const start = (Saraajinbot = new Client()) => {
                     .setBackground('https://www.photohdx.com/images/2016/05/red-blurry-background.jpg')
                     .toAttachment()
                 const base64 = `data:image/png;base64,${welcomer.toBuffer().toString('base64')}`
-                await Saraajinbot.sendFile(event.chat, base64, 'welcome.png', `Welcome ${pushname}!`)
+                await bocchi.sendFile(event.chat, base64, 'welcome.png', `Welcome ${pushname}!`)
             } else if (event.action === 'remove' && event.who !== botNumbers && isWelcome) {
-                const pic = await Saraajinbot.getProfilePicFromServer(event.who)
+                const pic = await bocchi.getProfilePicFromServer(event.who)
                 if (pic === undefined) {
                     var picxs = 'https://i.ibb.co/Tq7d7TZ/age-hananta-495-photo.png'
                 } else {
@@ -123,7 +123,7 @@ const start = (Saraajinbot = new Client()) => {
                     .setBackground('https://www.photohdx.com/images/2016/05/red-blurry-background.jpg')
                     .toAttachment()
                 const base64 = `data:image/png;base64,${bye.toBuffer().toString('base64')}`
-                await Saraajinbot.sendFile(event.chat, base64, 'welcome.png', `Bye ${pushname}, we will miss you~`)
+                await bocchi.sendFile(event.chat, base64, 'welcome.png', `Bye ${pushname}, we will miss you~`)
             }
         } catch (err) {
             console.error(err)
@@ -132,5 +132,5 @@ const start = (Saraajinbot = new Client()) => {
 }
 
 create(options(start))
-    .then((Saraajinbot) => start(Saraajinbot))
+    .then((bocchi) => start(bocchi))
     .catch((err) => console.error(err))

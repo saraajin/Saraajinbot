@@ -1,21 +1,21 @@
 {
-  "name": "SaraajinBot",
+  "name": "bocchibot",
   "version": "0.7.0",
-  "description": "Saraajinbot is a multipurpose WhatsApp bot.",
+  "description": "BocchiBot is a multipurpose WhatsApp bot.",
   "main": "index.js",
   "scripts": {
     "test": "node ./test/test.js",
     "start": "node index.js"
   },
-  "author": "Saraajinbot",
+  "author": "SlavyanDesu",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Saraajinbot/Saraajinbot.git"
+    "url": "https://github.com/SlavyanDesu/BocchiBot.git"
   },
   "bugs": {
-    "url": "https://github.com/Saraajinbot/Saraajinbot/issues"
+    "url": "https://github.com/SlavyanDesu/BocchiBot/issues"
   },
-  "homepage": "https://github.com/Saraajinbot/Saraajinbot",
+  "homepage": "https://github.com/SlavyanDesu/BocchiBot",
   "license": "MIT",
   "dependencies": {
     "@justalk/pornhub-api": "^3.4.0",
